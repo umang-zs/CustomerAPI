@@ -1,11 +1,9 @@
-package main
+package handler
 
 import (
 	"bytes"
-	"database/sql"
 	"github.com/gorilla/mux"
 	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -13,12 +11,7 @@ import (
 )
 
 func TestGetCustomer(t *testing.T) {
-	db, err = sql.Open("mysql", "root:secret123@tcp(127.0.0.1:3306)/customer")
-	if err != nil {
-		log.Println(err.Error())
-	}
 
-	defer db.Close()
 	cases := []struct {
 		desc string
 		id   string // input
@@ -33,7 +26,7 @@ func TestGetCustomer(t *testing.T) {
 		r := mux.SetURLVars(req, map[string]string{"id": tc.id})
 		w := httptest.NewRecorder()
 
-		getCustomerbyID(w, r)
+		getCustomerByID(w, r)
 
 		resp := w.Result()
 
@@ -51,13 +44,6 @@ func TestGetCustomer(t *testing.T) {
 }
 
 func TestCreateCustomer(t *testing.T) {
-	db, err = sql.Open("mysql", "root:secret123@tcp(127.0.0.1:3306)/customer")
-	if err != nil {
-		log.Println(err.Error())
-	}
-
-	defer db.Close()
-
 	cases := []struct {
 		desc       string
 		customer   []byte
@@ -70,7 +56,7 @@ func TestCreateCustomer(t *testing.T) {
 		req := httptest.NewRequest("POST", "/getCustomer", bytes.NewReader(tc.customer))
 		w := httptest.NewRecorder()
 
-		createCustomer(w, req)
+		CreateCustomer(w, req)
 
 		resp := w.Result()
 
@@ -83,13 +69,6 @@ func TestCreateCustomer(t *testing.T) {
 }
 
 func TestUpdateCustomer(t *testing.T) {
-
-	db, err = sql.Open("mysql", "root:secret123@tcp(127.0.0.1:3306)/customer")
-	if err != nil {
-		log.Println(err.Error())
-	}
-
-	defer db.Close()
 
 	cases := []struct {
 		desc       string
@@ -106,7 +85,7 @@ func TestUpdateCustomer(t *testing.T) {
 		r := mux.SetURLVars(req, map[string]string{"id": tc.id})
 		w := httptest.NewRecorder()
 
-		updateCustomerbyID(w, r)
+		UpdateCustomerByID(w, r)
 
 		resp := w.Result()
 
@@ -128,12 +107,6 @@ func TestUpdateCustomer(t *testing.T) {
 }
 
 func TestDeleteCustomer(t *testing.T) {
-	db, err = sql.Open("mysql", "root:secret123@tcp(127.0.0.1:3306)/customer")
-	if err != nil {
-		log.Println(err.Error())
-	}
-
-	defer db.Close()
 
 	cases := []struct {
 		desc       string
@@ -149,7 +122,7 @@ func TestDeleteCustomer(t *testing.T) {
 		r := mux.SetURLVars(req, map[string]string{"id": tc.id})
 		w := httptest.NewRecorder()
 
-		deleteCustomerbyID(w, r)
+		deleteCustomerByID(w, r)
 
 		resp := w.Result()
 
